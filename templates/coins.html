@@ -13,7 +13,7 @@
     {{ coin.price_change }}
 
 
-    {% if user.is_authenticated %}
+    <!-- {% if user.is_authenticated %}
     
         <form action="" method="POST">
             {{ post_form | crispy }}
@@ -22,7 +22,32 @@
             <button type="submit">Submit</button>
         </form>
 
-    {% endif %}
+    {% endif %} -->
+
+    <div class="row">
+        <div class="col create-post">
+          <p>
+              <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                Create Post
+              </button>
+          </p>
+            <div class="collapse" id="collapseExample">
+              <div class="card card-body">
+                  {% if user.is_authenticated %}    
+                      <form action="" method="POST">
+                          {{ post_form | crispy }}
+                          {% csrf_token %}
+                          <input type="hidden" id="coin_name" name="coin_name" value="{{ coin.coin_id }}">
+                          <button type="submit">Submit</button>
+                      </form>
+                  {% else %}
+                      <p>You must be log in to create a post</p>
+                      <a class="btn btn-primary" href="{% url 'account_login' %}" role="button">Login</a><a class="btn btn-primary" href="{% url 'account_signup' %}" role="button">Register</a>
+                  {% endif %}    
+              </div>
+            </div>
+        </div>
+    </div>
     
     
 
@@ -31,21 +56,33 @@
 
 {% for i in post %}
 
-
-<div class="col-md-8">
-    <div class="card-body">
+<div class="container">
+    <div class="row">
+      <div class="col">
         <h3>{{ i.title }}</h3>
-        <p>ID:{{ i.id }}</p> 
-        <p>Slug:{{ i.slug }}</p>  
-        <p>{{ i.content }}</p>
-        <p>Posted by:{{ i.user }}</p>        
-        <p>{{ i.created_on }}</p>
-        <a class="nav-link active" aria-current="page" href="{% url 'coin_detail' i.slug %}">Comments</a>
-        <i class="fas fa-arrow-alt-circle-up upvote-click" data-post="{{ i.id }}"></i>
-        <strong class="vote-count-{{ i.id }}"></strong><i class="fas fa-arrow-alt-circle-down downvote-click" data-post="{{ i.id }}"></i>        
-
+      </div>
+      <div class="col">
+        <p>Posted by:{{ i.user }}</p>
+      </div>
     </div>
-</div>
+    <div class="row">
+        <div class="col">
+            <p>{{ i.content }}</p>
+        </div>        
+    </div>
+    <div class="row">
+      <div class="col">
+        <a class="btn btn-primary" href="{% url 'coin_detail' i.slug %}" role="button">Comments</a>
+      </div>
+      <div class="col">
+        <i class="fas fa-arrow-alt-circle-up upvote-click" data-post="{{ i.id }}"></i>
+        <strong class="vote-count-{{ i.id }}"></strong><i class="fas fa-arrow-alt-circle-down downvote-click" data-post="{{ i.id }}"></i>  
+      </div>
+      <div class="col">
+        <p>{{ i.created_on }}</p>
+      </div>
+    </div>
+  </div>
     
 
 
@@ -67,8 +104,9 @@
                 dataType:'json',
                 success: function(response){
                     let count = response.count
+                    let id = response.post_id
                     $(".vote-count-"+postid).html(count);
-                    console.log(count);
+                    console.log(count, id);
                 }
             });
         });
@@ -86,8 +124,9 @@
                 dataType:'json',
                 success: function(response){
                     let count = response.count
+                    let id = response.post_id
                     $(".vote-count-"+postid).html(count);
-                    console.log(count);
+                    console.log(count, id);
                 }
             });
         });

@@ -2,29 +2,30 @@
 
 {% block content %}
 
+<section class="container">
+
+  <div class="row row-cols-1 row-cols-md-3 g-4">
     {% for coin in all_markets %}
-
-    <div class="card mb-3" style="max-width: 540px;">
-      <div class="row g-0">
-        <div class="col-md-4">
-              <form action="{% url 'coin_posts' coin.id %}" method="GET">
-                <input type="hidden" id="coin_id" name="coin_id" value="{{ coin.id }}">
-                <input type="image" name="submit" src="{{ coin.image }}">
-              </form>
-        </div>
-
-    <div class="card mb-3" style="max-width: 540px;">
-          <div class="col-md-8">
-            <div class="card-body">
-              <h5 class="card-title">{{ coin.name }}</h5>
-              <p class="card-text"><small class="text-muted">Current Price: ${{ coin.current_price }}</small></p>
-              <p class="card-text"><small class="text-muted">Marketcap: ${{ coin.market_cap }}</small></p>
-              <p class="card-text"><small class="text-muted">24h Price Change: ${{ coin.price_change_24h }}</small></p>        
-            </div>
+      <div class="col">
+        <div class="card">
+          <form action="{% url 'coin_posts' coin.id %}" method="GET">
+            <input type="hidden" id="coin_id" name="coin_id" value="{{ coin.id }}">
+            <input type="image" name="submit" src="{{ coin.image }}">
+          </form>
+          <div class="card-body">
+            <h5 class="card-title">{{ coin.name }}</h5>
+            <p class="card-text">Current Price: <strong>${{ coin.current_price }}</strong></p>
+            <p class="card-text">Marketcap: <strong>${{ coin.market_cap }}</strong></p>
+            <p class="card-text">24h Price Change: <strong>${{ coin.price_change_24h }}</strong></p>  
           </div>
         </div>
       </div>
-
     {% endfor %}
+  </div>
+      
+
+    
+
+</section>
 
 {% endblock content %}

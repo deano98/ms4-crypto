@@ -101,23 +101,21 @@ def post_upvote(request, id):
     if request.method =='POST':
         post_id = request.POST['postid']
         post = Post.objects.get(pk = post_id)
-
-        up_count = post.up_votes.count()
-        down_count = post.down_votes.count()
-        count = up_count - down_count
-
-        post_title = post.title
         
         if post.up_votes.filter(id=request.user.id).exists():
             post.up_votes.remove(request.user)
         elif post.down_votes.filter(id=request.user.id).exists():
             post.down_votes.remove(request.user)
+            post.up_votes.add(request.user)
         else:
             post.up_votes.add(request.user)
 
+        up_count = post.up_votes.count()
+        down_count = post.down_votes.count()
+        count = up_count - down_count
+
         return JsonResponse({
-            'post_title': post_title,
-            'postid': post_id,
+            'post_id': post_id,
             'count': count,
             })
 
@@ -126,22 +124,20 @@ def post_downvote(request, id):
     if request.method =='POST':
         post_id = request.POST['postid']
         post = Post.objects.get(pk = post_id)
-
-        up_count = post.up_votes.count()
-        down_count = post.down_votes.count()
-        count = up_count - down_count
-
-        post_title = post.title
         
         if post.down_votes.filter(id=request.user.id).exists():
             post.down_votes.remove(request.user)
         elif post.up_votes.filter(id=request.user.id).exists():
             post.up_votes.remove(request.user)
+            post.down_votes.add(request.user)
         else:
             post.down_votes.add(request.user)
 
+        up_count = post.up_votes.count()
+        down_count = post.down_votes.count()
+        count = up_count - down_count
+
         return JsonResponse({
-            'post_title': post_title,
-            'postid': post_id,
+            'post_id': post_id,
             'count': count,
             })
