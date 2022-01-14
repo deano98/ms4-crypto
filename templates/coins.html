@@ -34,10 +34,12 @@
 <div class="col-md-8">
     <div class="card-body">
         <h3>{{ i.title }}</h3>
-        <p>ID:{{ i.id }}</p>  
+        <p>ID:{{ i.id }}</p> 
+        <p>Slug:{{ i.slug }}</p>  
         <p>{{ i.content }}</p>
         <p>Posted by:{{ i.user }}</p>        
         <p>{{ i.created_on }}</p>
+        <a class="nav-link active" aria-current="page" href="{% url 'coin_detail' i.slug %}">Comments</a>
         <i class="fas fa-arrow-alt-circle-up upvote-click" data-post="{{ i.id }}"></i>
         <strong class="vote-count-{{ i.id }}"></strong><i class="fas fa-arrow-alt-circle-down downvote-click" data-post="{{ i.id }}"></i>        
 

@@ -1,0 +1,32 @@
+{% extends 'base.html' %} 
+{% load static %}
+{% block content %}
+{% load crispy_forms_tags %}
+
+
+{% for i in comments %}
+ <div class="col-md-8">
+    <div class="card-body">
+        <p>ID: {{ i.id }}</p>
+        <p>{{ i.content }}</p>
+        <p>{{ i.created_on }}</p>
+    </div>
+  </div>
+  {% endfor %}
+
+ <div class="col-md-8">
+    <div class="card-body">
+        <h3>{{ post.title }}</h3>
+        <p>ID: {{ post.id }}</p>
+        <p>{{ post.content }}</p>
+        <p>{{ post.created_on }}</p>
+    </div>
+  </div>
+
+  <form action="" method="POST">
+      {{ comment_form | crispy }}
+      {% csrf_token %}
+      <button type="submit">Submit</button>
+  </form>
+
+  {% endblock content %}

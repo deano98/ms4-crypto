@@ -1,6 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, reverse
 from pycoingecko import CoinGeckoAPI
-from .forms import PostForm
+from .forms import PostForm, CommentForm
 from .models import Post, Comment, Coins
 import requests
 from django.utils.text import slugify
@@ -57,5 +57,19 @@ def coin_posts(request, id):
             'post': post,
             'coin_display': coin_display,
             'post_form': post_form,
+            },
+        )
+
+def post_detail(request, slug):
+
+    if request.method =='GET':
+        queryset = Post.objects.all()
+        post = get_object_or_404(queryset, slug=slug)
+        comments = post.replies.order_by("-created_on")
+
+        return render(request, 'coin_detail.html', { 
+            'comments': comments,
+            'post': post,
+            'comment_form': CommentForm(),
             },
         )

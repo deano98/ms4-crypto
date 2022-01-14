@@ -36,7 +36,8 @@ class Post(models.Model):
 # Model for each comment's data
 
 class Comment(models.Model):
-    post = models.ForeignKey(Coins, on_delete=models.CASCADE, related_name="replies")
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="replies")
+    user = models.CharField(max_length=80)
     content = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
     up_votes = models.ManyToManyField(User, related_name='comment_up_votes', blank=True)

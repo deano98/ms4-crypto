@@ -4,4 +4,5 @@ from . import views
 urlpatterns = [
     path('', views.markets, name="index"), 
     path('coin/<str:id>/', views.coin_posts, name='coin_posts'),
+    path('post/<slug:slug>/', views.post_detail, name='coin_detail'),
 ]
