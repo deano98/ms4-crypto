@@ -73,3 +73,24 @@ def post_detail(request, slug):
             'comment_form': CommentForm(),
             },
         )
+
+    if request.method == 'POST':
+        queryset = Post.objects.all()
+        post = get_object_or_404(queryset, slug=slug)
+        comments = post.replies.order_by("-created_on")
+        comment_form = CommentForm(data=request.POST)
+
+        if comment_form.is_valid():
+            comment_form.instance.user = request.user.username
+            comment = comment_form.save(commit=False)
+            comment.post = post
+            comment.save()
+        else:
+            comment_form = CommentForm()
+
+        return render(request, 'coin_detail.html', { 
+            'comments': comments,
+            'post': post,
+            'comment_form': comment_form,
+            },
+        )
