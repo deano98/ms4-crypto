@@ -1,6 +1,50 @@
+{% extends 'base.html' %} {% block content %}
+{% load crispy_forms_tags %}
+{% load static %}
 
 {% for coin in coin_display %}
 
+    
+    <img src="{{ coin.image_url }}" alt="">
     {{ coin.coin_name }}
+    {{ coin.coin_price }}
+    {{ coin.market_cap }}
+    {{ coin.rank }}
+    {{ coin.price_change }}
+
+
+
+    {% load crispy_forms_tags %}
+
+    <form action="" method="POST">
+        {{ post_form | crispy }}
+        {% csrf_token %}
+        <input type="hidden" id="coin_name" name="coin_name" value="{{ coin.coin_id }}">
+        <button type="submit">Submit</button>
+    </form>
+    
+    
 
 {% endfor %}
+
+
+{% for i in post %}
+
+
+<div class="col-md-8">
+    <div class="card-body">
+        <h3>{{ i.title }}</h3>
+        <p>ID:{{ i.id }}</p>  
+        <p>{{ i.content }}</p>
+        
+        <p>{{ i.created_on }}</p>
+        <i class="fas fa-arrow-alt-circle-up upvote-click" data-post="{{ i.id }}"></i>
+        <strong class="vote-count-{{ i.id }}"></strong><i class="fas fa-arrow-alt-circle-down downvote-click" data-post="{{ i.id }}"></i>        
+
+    </div>
+</div>
+    
+
+
+{% endfor %}
+{% endblock content %}

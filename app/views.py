@@ -34,5 +34,6 @@ def coin_posts(request, id):
         return render(request, 'coins.html', { 
             'post': post,
             'coin_display': coin_display,
+            'post_form': PostForm(),
             },
         )
