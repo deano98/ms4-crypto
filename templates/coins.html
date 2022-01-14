@@ -50,4 +50,49 @@
 
 
 {% endfor %}
+
+<script>
+    $(document).ready(function(){
+        
+        $(".upvote-click").click(function() {
+            let postid = $(this).data('post');
+
+            $.ajax({
+                url: 'upvote/',
+                type: 'post',
+                data:{
+                    postid: postid,
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                },
+                dataType:'json',
+                success: function(response){
+                    let count = response.count
+                    $(".vote-count-"+postid).html(count);
+                    console.log(count);
+                }
+            });
+        });
+
+        $(".downvote-click").click(function() {
+            let postid = $(this).data('post');
+
+            $.ajax({
+                url: 'downvote/',
+                type: 'post',
+                data:{
+                    postid: postid,
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                },
+                dataType:'json',
+                success: function(response){
+                    let count = response.count
+                    $(".vote-count-"+postid).html(count);
+                    console.log(count);
+                }
+            });
+        });
+    });
+
+</script>
+
 {% endblock content %}

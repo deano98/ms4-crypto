@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     'app',
     'pycoingecko',
     'jquery',
+    'dajaxice',
+    'dajax',
 ]
 
 SITE_ID = 1

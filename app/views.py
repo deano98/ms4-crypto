@@ -4,6 +4,7 @@ from .forms import PostForm, CommentForm
 from .models import Post, Comment, Coins
 import requests
 from django.utils.text import slugify
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 
 def markets(request):
     cg = CoinGeckoAPI()
@@ -94,3 +95,53 @@ def post_detail(request, slug):
             'comment_form': comment_form,
             },
         )
+
+def post_upvote(request, id):
+
+    if request.method =='POST':
+        post_id = request.POST['postid']
+        post = Post.objects.get(pk = post_id)
+
+        up_count = post.up_votes.count()
+        down_count = post.down_votes.count()
+        count = up_count - down_count
+
+        post_title = post.title
+        
+        if post.up_votes.filter(id=request.user.id).exists():
+            post.up_votes.remove(request.user)
+        elif post.down_votes.filter(id=request.user.id).exists():
+            post.down_votes.remove(request.user)
+        else:
+            post.up_votes.add(request.user)
+
+        return JsonResponse({
+            'post_title': post_title,
+            'postid': post_id,
+            'count': count,
+            })
+
+def post_downvote(request, id):
+
+    if request.method =='POST':
+        post_id = request.POST['postid']
+        post = Post.objects.get(pk = post_id)
+
+        up_count = post.up_votes.count()
+        down_count = post.down_votes.count()
+        count = up_count - down_count
+
+        post_title = post.title
+        
+        if post.down_votes.filter(id=request.user.id).exists():
+            post.down_votes.remove(request.user)
+        elif post.up_votes.filter(id=request.user.id).exists():
+            post.up_votes.remove(request.user)
+        else:
+            post.down_votes.add(request.user)
+
+        return JsonResponse({
+            'post_title': post_title,
+            'postid': post_id,
+            'count': count,
+            })
