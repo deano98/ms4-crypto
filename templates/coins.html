@@ -13,15 +13,16 @@
     {{ coin.price_change }}
 
 
+    {% if user.is_authenticated %}
+    
+        <form action="" method="POST">
+            {{ post_form | crispy }}
+            {% csrf_token %}
+            <input type="hidden" id="coin_name" name="coin_name" value="{{ coin.coin_id }}">
+            <button type="submit">Submit</button>
+        </form>
 
-    {% load crispy_forms_tags %}
-
-    <form action="" method="POST">
-        {{ post_form | crispy }}
-        {% csrf_token %}
-        <input type="hidden" id="coin_name" name="coin_name" value="{{ coin.coin_id }}">
-        <button type="submit">Submit</button>
-    </form>
+    {% endif %}
     
     
 

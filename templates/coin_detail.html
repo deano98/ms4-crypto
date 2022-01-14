@@ -23,10 +23,14 @@
     </div>
   </div>
 
-  <form action="" method="POST">
-      {{ comment_form | crispy }}
-      {% csrf_token %}
-      <button type="submit">Submit</button>
-  </form>
+  {% if user.is_authenticated %}
+
+        <form action="" method="POST">
+            {{ comment_form | crispy }}
+            {% csrf_token %}
+            <button type="submit">Submit</button>
+        </form>
+
+    {% endif %}    
 
   {% endblock content %}
