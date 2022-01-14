@@ -18,8 +18,8 @@ class Coins(models.Model):
 # Model for each post's data
 
 class Post(models.Model):
-    coin = models.ForeignKey(Coins, on_delete=models.CASCADE, related_name="post_coin")
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="post_coin_user")
+    coin_name = models.CharField(max_length=200, unique=False)
+    user = models.CharField(max_length=80)
     title = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=200, unique=True)
     content = models.TextField()
