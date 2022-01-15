@@ -5,6 +5,7 @@ from .models import Post, Coins
 import requests
 from django.utils.text import slugify
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.urls import reverse
 
 
 def markets(request):
@@ -74,12 +75,12 @@ def coin_posts(request, id):
 #                 post_form = PostForm()
 
 
-# def post_delete(request, id):
-#     if request.method == 'GET':
-#         post = Post.objects.get(pk=id)
-#         if request.user == post.user:
-#             Post.objects.get(pk=id).delete()
-#             return reverse('coin_posts')
+def post_delete(request, slug, id):
+    obj = Post.objects.get(slug=slug)
+    if str(request.user) == obj.user:
+        Post.objects.filter(slug=slug).delete()
+
+    return HttpResponseRedirect(reverse('coin_posts', args=[id]))
 
 
 def post_detail(request, slug):

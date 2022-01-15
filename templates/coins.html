@@ -51,7 +51,7 @@
     
     
 
-{% endfor %}
+
 
 
 {% for i in post %}
@@ -72,14 +72,20 @@
     </div>
     <div class="row border border-top-0 border-4 content">
       <div class="col">
-        <a class="btn btn-primary" href="{% url 'coin_detail' i.slug %}" role="button">Comments</a>
+        <a class="btn btn-primary" href="{% url 'post_delete' i.slug coin.coin_id  %}" role="button">Delete</a>
       </div>
       <div class="col">
+        
         <strong class="up-vote-count-{{ i.id }} upvote">
           {{ i.up_votes.count }}
         </strong>
-        <i class="fas fa-arrow-alt-circle-up upvote upvote-click" data-post="{{ i.id }}"></i>
-        <i class="fas fa-arrow-alt-circle-down downvote downvote-click" data-post="{{ i.id }}"></i>
+        {% if user.is_authenticated %}
+        <i class="fas fa-arrow-alt-circle-up vote upvote upvote-click" data-post="{{ i.id }}"></i>
+        <i class="fas fa-arrow-alt-circle-down vote downvote downvote-click" data-post="{{ i.id }}"></i>
+        {% else %}
+        <i class="fas fa-arrow-alt-circle-up vote-fade upvote upvote-click" data-post="{{ i.id }}"></i>
+        <i class="fas fa-arrow-alt-circle-down vote-fade downvote downvote-click" data-post="{{ i.id }}"></i>
+        {% endif %}
         <strong class="down-vote-count-{{ i.id }} downvote">
           {{ i.down_votes.count }}
         </strong>
@@ -91,7 +97,7 @@
   </div>
     
 
-
+{% endfor %}
 {% endfor %}
 
 <script>
