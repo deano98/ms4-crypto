@@ -21,6 +21,7 @@ def coin_posts(request, id):
         post = Post.objects.filter(coin_name=id)
         api = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=%s&order=market_cap_desc&per_page=100&page=1&sparkline=false' % id
         response = requests.get(api)
+        request_user = str(request.user)
 
         data = response.json()
         coin = data[0]        
@@ -41,6 +42,7 @@ def coin_posts(request, id):
             'post': post,
             'coin_display': coin_display,
             'post_form': PostForm(),
+            'request_user': request_user,
             },
         )
 
@@ -48,6 +50,7 @@ def coin_posts(request, id):
         post = Post.objects.filter(coin_name=id)
         post_form = PostForm(data=request.POST)
         coin_display = Coins.objects.filter(coin_id=id)
+        request_user = str(request.user)
 
         if post_form.is_valid():
             post_form.instance.coin_name = request.POST['coin_name']
@@ -61,18 +64,22 @@ def coin_posts(request, id):
             'post': post,
             'coin_display': coin_display,
             'post_form': post_form,
+            'request_user': request_user,
             },
         )
 
-# def post_edit(request, id):
-#     post = Post.objects.filter(pk=id)
-#     if request.user == post.user:
-#         if request.method == 'POST':
-#             form = PostForm(request.POST, instance=post)
-#             if form.is_valid():
-#                 post_form.save()
-#             else:
-#                 post_form = PostForm()
+def post_edit(request, slug, id):
+    obj = Post.objects.get(slug=slug)
+    print(obj.title)
+    if str(request.user) == obj.user:
+        if request.method == 'POST':
+            post_form = PostForm(request.POST, instance=obj)
+            if post_form.is_valid():
+                post_form.save()
+            else:
+                post_form = PostForm()
+    
+    return HttpResponseRedirect(reverse('coin_posts', args=[id]))
 
 
 def post_delete(request, slug, id):

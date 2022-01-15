@@ -2,8 +2,6 @@
 {% load crispy_forms_tags %}
 {% load static %}
 
-{{ up_count }}
-
 {% for coin in coin_display %}
 
 <div class="card mb-3" style="max-width: 540px;">
@@ -72,7 +70,23 @@
     </div>
     <div class="row border border-top-0 border-4 content">
       <div class="col">
-        <a class="btn btn-primary" href="{% url 'post_delete' i.slug coin.coin_id  %}" role="button">Delete</a>
+        {% if i.user == request_user %}
+          <a class="btn btn-primary" href="{% url 'post_delete' i.slug coin.coin_id  %}" role="button">Delete</a>
+          <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">Edit</a>
+          <div class="collapse" id="collapseExample">
+            <div class="card card-body">
+              <form action="{% url 'post_edit' i.slug coin.coin_id  %}" method="POST">
+                {{ post_form | crispy }}
+                {% csrf_token %}
+                <input type="hidden" id="coin_name" name="coin_name" value="{{ coin.coin_id }}">
+                <button type="submit">Submit</button>
+            </form>
+            </div>
+          </div>
+        {% else %}
+        <button type="button" class="btn btn-secondary btn" disabled>Delete</button>
+        <button type="button" class="btn btn-secondary btn" disabled>Edit</button>    
+        {% endif %}      
       </div>
       <div class="col">
         
