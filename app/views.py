@@ -122,8 +122,8 @@ def post_edit(request, slug, id):
             post_form = PostForm(request.POST, instance=obj)
             if post_form.is_valid():
                 post_form.save()
-            else:
-                post_form = PostForm()
+        else:
+            post_form = PostForm()
     
     return HttpResponseRedirect(reverse('coin_posts', args=[id]))
 

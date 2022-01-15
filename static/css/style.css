@@ -45,6 +45,17 @@ nav {
   border-color: #4D8076;
 }
 
+.btn:hover {
+  background-color: #80B5AA;
+  border-color: #80B5AA;
+}
+
+.btn:focus {
+  background-color: #C4FCF0;
+  border-color: #C4FCF0;
+  color: #4D8076;
+}
+
 .vote-fade {
   color: #C4FCF0;
 }
