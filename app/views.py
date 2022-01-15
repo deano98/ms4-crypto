@@ -6,6 +6,7 @@ import requests
 from django.utils.text import slugify
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
+from django.forms import ValidationError
 
 
 def markets(request):
@@ -94,16 +95,17 @@ def coin_posts(request, id):
             post_form.instance.user = request.user.username
             post_form.instance.slug = slugify(request.POST['title'])
             post_form.save()
-        else:
-            post_form = PostForm()
 
-        return render(request, 'coins.html', {
-            'post': post,
-            'coin_display': coin_display,
-            'post_form': post_form,
-            'request_user': request_user,
-            },
-        )
+    else:
+        post_form = PostForm()
+
+    return render(request, 'coins.html', {
+        'post': post,
+        'coin_display': coin_display,
+        'post_form': post_form,
+        'request_user': request_user,
+        },
+    )
 
 def post_edit(request, slug, id):
     '''
@@ -115,7 +117,6 @@ def post_edit(request, slug, id):
 
     '''
     obj = Post.objects.get(slug=slug)
-    print(obj.title)
     if str(request.user) == obj.user:
         if request.method == 'POST':
             post_form = PostForm(request.POST, instance=obj)

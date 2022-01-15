@@ -4,53 +4,41 @@
 
 {% for coin in coin_display %}
 
-<div class="card mb-3" style="max-width: 540px;">
-  <div class="row g-0">
-    <div class="col-md-4">
-      <img src="{{ coin.image_url }}" class="img-fluid rounded-start" alt="{{ coin.name }} logo">
+<div class="container">
+  <div class="row">
+    <div class="col order-last">
+      <div class="card card-body">   
+          <form action="" method="POST">
+              {{ post_form | crispy }}
+                {% csrf_token %}
+                  <input type="hidden" id="coin_name" name="coin_name" value="{{ coin.coin_id }}">
+                {% if user.is_authenticated %} 
+                  <button class="btn btn-primary" type="submit">Submit</button>
+                {% else %}
+                  <a class="btn btn-primary" href="{% url 'account_login' %}" role="button">Login</a><a class="btn btn-primary" href="{% url 'account_signup' %}" role="button">Register</a>
+                {% endif %} 
+            </form>
+           </div>
     </div>
-    <div class="col-md-8">
-      <div class="card-body">
-        <h5 class="card-title">{{ coin.coin_name }}</h5>
-        <p class="card-text">Current Price: <strong>${{ coin.coin_price }}</strong></p>
-        <p class="card-text">Current Market Cap: <strong>${{ coin.market_cap }}</strong></p>
-        <p class="card-text">24hr Price Change: <strong>${{ coin.price_change }}</strong></p>
+    <div class="col order-first">
+      <div class="card mb-3" style="max-width: 540px;">
+        <div class="row g-0">
+          <div class="col-md-4">
+            <img src="{{ coin.image_url }}" class="img-fluid rounded-start" alt="{{ coin.name }} logo">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">{{ coin.coin_name }}</h5>
+              <p class="card-text">Current Price: <strong>${{ coin.coin_price }}</strong></p>
+              <p class="card-text">Current Market Cap: <strong>${{ coin.market_cap }}</strong></p>
+              <p class="card-text">24hr Price Change: <strong>${{ coin.price_change }}</strong></p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
-
-
-
-<div class="row">
-    <div class="col create-post">
-      <p>
-          <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-            Create Post
-          </button>
-      </p>
-        <div class="collapse" id="collapseExample">
-          <div class="card card-body">
-              {% if user.is_authenticated %}    
-                  <form action="" method="POST">
-                      {{ post_form | crispy }}
-                      {% csrf_token %}
-                      <input type="hidden" id="coin_name" name="coin_name" value="{{ coin.coin_id }}">
-                      <button type="submit">Submit</button>
-                  </form>
-              {% else %}
-                  <p>You must be log in to create a post</p>
-                  <a class="btn btn-primary" href="{% url 'account_login' %}" role="button">Login</a><a class="btn btn-primary" href="{% url 'account_signup' %}" role="button">Register</a>
-              {% endif %}    
-          </div>
-        </div>
-    </div>
-</div>
-    
-    
-
-
-
 
 {% for i in post %}
 
@@ -63,7 +51,7 @@
         <h5>Posted by: <strong>{{ i.user }}</strong></h5>
       </div>
     </div>
-    <div class="row border border-2">
+    <div class="row border border-4">
         <div class="col lh-1 content">
             <p>{{ i.content }}</p>
         </div>        
@@ -79,7 +67,7 @@
                 {{ post_form | crispy }}
                 {% csrf_token %}
                 <input type="hidden" id="coin_name" name="coin_name" value="{{ coin.coin_id }}">
-                <button type="submit">Submit</button>
+                <button class="btn btn-primary" type="submit">Submit</button>
             </form>
             </div>
           </div>

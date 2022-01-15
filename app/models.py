@@ -25,7 +25,7 @@ class Post(models.Model):
     '''
     coin_name = models.CharField(max_length=200, unique=False)
     user = models.CharField(max_length=80)
-    title = models.CharField(max_length=200, unique=True)
+    title = models.CharField(max_length=200, unique=True, error_messages={'unique':"Title must be unique"})
     slug = models.SlugField(max_length=200, unique=True)
     content = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
