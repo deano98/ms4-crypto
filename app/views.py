@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from pycoingecko import CoinGeckoAPI
-from .forms import PostForm, CommentForm
+from .forms import PostForm
 from .models import Post, Coins
 import requests
 from django.utils.text import slugify
@@ -9,6 +9,20 @@ from django.urls import reverse
 
 
 def markets(request):
+    '''
+    Display the current price data for the top 12 cryptocurrencies 
+    ranked by market cap
+
+    **Context**
+
+    ``all_markets``
+            object containing the price data
+        
+    **Template:**
+
+    :template: `index.html`
+
+    '''
     cg = CoinGeckoAPI()
     all_markets = cg.get_coins_markets(order='market_cap_desc', 
                                        vs_currency='usd', per_page=12, page=1)
@@ -16,6 +30,29 @@ def markets(request):
 
     
 def coin_posts(request, id):
+    '''
+    GET: Display all posts from the Post model for a particular coin, 
+    update Coins model with latest data from API.
+
+    POST: Update the Post model with data submitted from a user using 
+    the PostForm.
+
+    **Context**
+
+    ``post``
+        An instance of :model: `Post`
+    ``coin_display``
+        An instance of :model: `Coins`
+    ``post_form``
+        Form to create a new post
+    ``request_user``
+        The user who made the request, saved as a string
+
+    **Template:**
+
+    :template: `coins.html`
+
+    '''
     if request.method == 'GET':
         coin_display = {}
         post = Post.objects.filter(coin_name=id)
@@ -69,6 +106,14 @@ def coin_posts(request, id):
         )
 
 def post_edit(request, slug, id):
+    '''
+    Allows a user to edit their own posts
+
+    **Template**
+
+    :template: `coins.html`
+
+    '''
     obj = Post.objects.get(slug=slug)
     print(obj.title)
     if str(request.user) == obj.user:
@@ -83,6 +128,14 @@ def post_edit(request, slug, id):
 
 
 def post_delete(request, slug, id):
+    '''
+    Allows a user to delete their own posts
+
+    **Template**
+
+    :template: `coins.html`
+
+    '''
     obj = Post.objects.get(slug=slug)
     if str(request.user) == obj.user:
         Post.objects.filter(slug=slug).delete()
@@ -90,44 +143,26 @@ def post_delete(request, slug, id):
     return HttpResponseRedirect(reverse('coin_posts', args=[id]))
 
 
-def post_detail(request, slug):
-
-    if request.method =='GET':
-        queryset = Post.objects.all()
-        post = get_object_or_404(queryset, slug=slug)
-        comments = post.replies.order_by("-created_on")
-
-        return render(request, 'coin_detail.html', { 
-            'comments': comments,
-            'post': post,
-            'comment_form': CommentForm(),
-            },
-        )
-
-    if request.method == 'POST':
-        queryset = Post.objects.all()
-        post = get_object_or_404(queryset, slug=slug)
-        comments = post.replies.order_by("-created_on")
-        comment_form = CommentForm(data=request.POST)
-
-        if comment_form.is_valid():
-            comment_form.instance.user = request.user.username
-            comment = comment_form.save(commit=False)
-            comment.post = post
-            comment.save()
-        else:
-            comment_form = CommentForm()
-
-        return render(request, 'coin_detail.html', { 
-            'comments': comments,
-            'post': post,
-            'comment_form': comment_form,
-            },
-        )
-
-
 def post_upvote(request, id):
+    '''
+    If a user clicks upvote on a post, checks the Post model
+    to see if user has already voted or not, model is updated 
+    accordingly
 
+    **Context**
+
+    ``post_id``
+        The primary key of the corresponding post
+    ``up_count``
+        The up vote count of the corresponding post
+    ``down_count``
+        The down vote count of the corresponding post
+
+    **Template:**
+
+    :template: `coins.html`
+
+    '''
     if request.method =='POST':
         post_id = request.POST['postid']
         post = Post.objects.get(pk = post_id)
@@ -150,6 +185,25 @@ def post_upvote(request, id):
             })
 
 def post_downvote(request, id):
+    '''
+    If a user clicks downvote on a post, checks the Post model
+    to see if user has already voted or not, model is updated 
+    accordingly
+
+    **Context**
+
+    ``post_id``
+        The primary key of the corresponding post
+    ``up_count``
+        The up vote count of the corresponding post
+    ``down_count``
+        The down vote count of the corresponding post
+
+    **Template:**
+
+    :template: `coins.html`
+
+    '''
 
     if request.method =='POST':
         post_id = request.POST['postid']
