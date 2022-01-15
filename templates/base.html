@@ -14,33 +14,9 @@
     <title>Milestone Crypto</title>
 </head>
 
-<!-- <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top">
-    <a class="navbar-brand" href="#">Milestone Crypto</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#navbarOffcanvasLg" aria-controls="navbarOffcanvasLg">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="navbarOffcanvasLg" aria-labelledby="navbarOffcanvasLgLabel">
-        {% if user.is_authenticated %}
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
-            </li>
-        {% else %}
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'account_signup' %}">Register</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'account_login' %}">Login</a>
-            </li>
-        </ul>
-    {% endif %}
-    </div>
-  </nav> -->
-
-
-  <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top">
+  <nav class="navbar navbar-dark navbar-expand-lg fixed-top">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Milestone Crypto</a>
+      <a class="navbar-brand" href="{% url 'index' %}">Milestone Crypto</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -52,7 +28,7 @@
         <div class="offcanvas-body">
           <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Home</a>
+              <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Home</a>
             </li>
             {% if user.is_authenticated %}
             <li class="nav-item">

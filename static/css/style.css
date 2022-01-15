@@ -1,7 +1,38 @@
 body {
-    padding-top: 60px;
+    padding-top: 90px;
 }
 
 .create-post {
-  padding: 60px;
+  padding-top: 60px;
+  padding-left: 30px;
+
+}
+
+.post {
+  padding-top: 30px;
+}
+
+.content {
+  padding: 15px;
+}
+
+.upvote {
+  color: green;
+}
+
+.downvote {
+  color: red;
+}
+
+.card {
+  border: None;
+}
+
+nav {
+  background-color: #4D8076;
+}
+
+.btn {
+  background-color: #4D8076;
+  border-color: #4D8076;
 }

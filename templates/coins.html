@@ -2,52 +2,52 @@
 {% load crispy_forms_tags %}
 {% load static %}
 
+{{ up_count }}
+
 {% for coin in coin_display %}
 
-    
-    <img src="{{ coin.image_url }}" alt="">
-    {{ coin.coin_name }}
-    {{ coin.coin_price }}
-    {{ coin.market_cap }}
-    {{ coin.rank }}
-    {{ coin.price_change }}
+<div class="card mb-3" style="max-width: 540px;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{ coin.image_url }}" class="img-fluid rounded-start" alt="{{ coin.name }} logo">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{ coin.coin_name }}</h5>
+        <p class="card-text">Current Price: <strong>${{ coin.coin_price }}</strong></p>
+        <p class="card-text">Current Market Cap: <strong>${{ coin.market_cap }}</strong></p>
+        <p class="card-text">24hr Price Change: <strong>${{ coin.price_change }}</strong></p>
+      </div>
+    </div>
+  </div>
+</div>
 
 
-    <!-- {% if user.is_authenticated %}
-    
-        <form action="" method="POST">
-            {{ post_form | crispy }}
-            {% csrf_token %}
-            <input type="hidden" id="coin_name" name="coin_name" value="{{ coin.coin_id }}">
-            <button type="submit">Submit</button>
-        </form>
 
-    {% endif %} -->
-
-    <div class="row">
-        <div class="col create-post">
-          <p>
-              <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                Create Post
-              </button>
-          </p>
-            <div class="collapse" id="collapseExample">
-              <div class="card card-body">
-                  {% if user.is_authenticated %}    
-                      <form action="" method="POST">
-                          {{ post_form | crispy }}
-                          {% csrf_token %}
-                          <input type="hidden" id="coin_name" name="coin_name" value="{{ coin.coin_id }}">
-                          <button type="submit">Submit</button>
-                      </form>
-                  {% else %}
-                      <p>You must be log in to create a post</p>
-                      <a class="btn btn-primary" href="{% url 'account_login' %}" role="button">Login</a><a class="btn btn-primary" href="{% url 'account_signup' %}" role="button">Register</a>
-                  {% endif %}    
-              </div>
-            </div>
+<div class="row">
+    <div class="col create-post">
+      <p>
+          <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            Create Post
+          </button>
+      </p>
+        <div class="collapse" id="collapseExample">
+          <div class="card card-body">
+              {% if user.is_authenticated %}    
+                  <form action="" method="POST">
+                      {{ post_form | crispy }}
+                      {% csrf_token %}
+                      <input type="hidden" id="coin_name" name="coin_name" value="{{ coin.coin_id }}">
+                      <button type="submit">Submit</button>
+                  </form>
+              {% else %}
+                  <p>You must be log in to create a post</p>
+                  <a class="btn btn-primary" href="{% url 'account_login' %}" role="button">Login</a><a class="btn btn-primary" href="{% url 'account_signup' %}" role="button">Register</a>
+              {% endif %}    
+          </div>
         </div>
     </div>
+</div>
     
     
 
@@ -56,30 +56,36 @@
 
 {% for i in post %}
 
-<div class="container">
-    <div class="row">
-      <div class="col">
+<div class="container post">
+    <div class="row border border-bottom-0 border-4">
+      <div class="col post text-center">
         <h3>{{ i.title }}</h3>
       </div>
       <div class="col">
-        <p>Posted by:{{ i.user }}</p>
+        <p>Posted by: <strong>{{ i.user }}</strong></p>
       </div>
     </div>
-    <div class="row">
-        <div class="col">
+    <div class="row border border-2">
+        <div class="col lh-1 content">
             <p>{{ i.content }}</p>
         </div>        
     </div>
-    <div class="row">
+    <div class="row border border-top-0 border-4 content">
       <div class="col">
         <a class="btn btn-primary" href="{% url 'coin_detail' i.slug %}" role="button">Comments</a>
       </div>
       <div class="col">
-        <i class="fas fa-arrow-alt-circle-up upvote-click" data-post="{{ i.id }}"></i>
-        <strong class="vote-count-{{ i.id }}"></strong><i class="fas fa-arrow-alt-circle-down downvote-click" data-post="{{ i.id }}"></i>  
+        <strong class="up-vote-count-{{ i.id }} upvote">
+          {{ i.up_votes.count }}
+        </strong>
+        <i class="fas fa-arrow-alt-circle-up upvote upvote-click" data-post="{{ i.id }}"></i>
+        <i class="fas fa-arrow-alt-circle-down downvote downvote-click" data-post="{{ i.id }}"></i>
+        <strong class="down-vote-count-{{ i.id }} downvote">
+          {{ i.down_votes.count }}
+        </strong>
       </div>
       <div class="col">
-        <p>{{ i.created_on }}</p>
+        <p>Posted on: <strong>{{ i.created_on }}</strong></p>
       </div>
     </div>
   </div>
@@ -89,7 +95,7 @@
 {% endfor %}
 
 <script>
-    $(document).ready(function(){
+    $(document).ready(function(){   
         
         $(".upvote-click").click(function() {
             let postid = $(this).data('post');
@@ -103,9 +109,11 @@
                 },
                 dataType:'json',
                 success: function(response){
-                    let count = response.count
+                    let up_count = response.up_count
+                    let down_count = response.down_count
                     let id = response.post_id
-                    $(".vote-count-"+postid).html(count);
+                    $(".down-vote-count-"+postid).html(down_count);
+                    $(".up-vote-count-"+postid).html(up_count);
                     console.log(count, id);
                 }
             });
@@ -123,9 +131,11 @@
                 },
                 dataType:'json',
                 success: function(response){
-                    let count = response.count
+                    let up_count = response.up_count
+                    let down_count = response.down_count
                     let id = response.post_id
-                    $(".vote-count-"+postid).html(count);
+                    $(".down-vote-count-"+postid).html(down_count);
+                    $(".up-vote-count-"+postid).html(up_count);
                     console.log(count, id);
                 }
             });

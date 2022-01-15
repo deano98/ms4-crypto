@@ -1,16 +1,19 @@
-from django.shortcuts import render, get_object_or_404, reverse
+from django.shortcuts import render, get_object_or_404
 from pycoingecko import CoinGeckoAPI
 from .forms import PostForm, CommentForm
-from .models import Post, Comment, Coins
+from .models import Post, Coins
 import requests
 from django.utils.text import slugify
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 
+
 def markets(request):
     cg = CoinGeckoAPI()
-    all_markets = cg.get_coins_markets(order='market_cap_desc', vs_currency='usd', per_page=10, page=1)
+    all_markets = cg.get_coins_markets(order='market_cap_desc', 
+                                       vs_currency='usd', per_page=12, page=1)
     return render(request, 'index.html', {'all_markets': all_markets})
 
+    
 def coin_posts(request, id):
     if request.method == 'GET':
         coin_display = {}
@@ -22,13 +25,13 @@ def coin_posts(request, id):
         coin = data[0]        
 
         coin_data = Coins(
-            coin_id = coin['id'],
-            coin_name = coin['name'],
-            coin_price = coin['current_price'],
-            market_cap = coin['market_cap'],
-            rank = coin['market_cap_rank'],
-            price_change = coin['price_change_24h'],
-            image_url = coin['image']
+            coin_id=coin['id'],
+            coin_name=coin['name'],
+            coin_price=coin['current_price'],
+            market_cap=coin['market_cap'],
+            rank=coin['market_cap_rank'],
+            price_change=coin['price_change_24h'],
+            image_url=coin['image']
         )
         coin_data.save()
         coin_display = Coins.objects.filter(coin_id=id)
@@ -40,7 +43,7 @@ def coin_posts(request, id):
             },
         )
 
-    if request.method == 'POST': 
+    if request.method == 'POST':
         post = Post.objects.filter(coin_name=id)
         post_form = PostForm(data=request.POST)
         coin_display = Coins.objects.filter(coin_id=id)
@@ -53,13 +56,31 @@ def coin_posts(request, id):
         else:
             post_form = PostForm()
 
-
-        return render(request, 'coins.html', { 
+        return render(request, 'coins.html', {
             'post': post,
             'coin_display': coin_display,
             'post_form': post_form,
             },
         )
+
+# def post_edit(request, id):
+#     post = Post.objects.filter(pk=id)
+#     if request.user == post.user:
+#         if request.method == 'POST':
+#             form = PostForm(request.POST, instance=post)
+#             if form.is_valid():
+#                 post_form.save()
+#             else:
+#                 post_form = PostForm()
+
+
+# def post_delete(request, id):
+#     if request.method == 'GET':
+#         post = Post.objects.get(pk=id)
+#         if request.user == post.user:
+#             Post.objects.get(pk=id).delete()
+#             return reverse('coin_posts')
+
 
 def post_detail(request, slug):
 
@@ -96,6 +117,7 @@ def post_detail(request, slug):
             },
         )
 
+
 def post_upvote(request, id):
 
     if request.method =='POST':
@@ -112,11 +134,11 @@ def post_upvote(request, id):
 
         up_count = post.up_votes.count()
         down_count = post.down_votes.count()
-        count = up_count - down_count
 
         return JsonResponse({
             'post_id': post_id,
-            'count': count,
+            'up_count': up_count,
+            'down_count': down_count,
             })
 
 def post_downvote(request, id):
@@ -135,9 +157,10 @@ def post_downvote(request, id):
 
         up_count = post.up_votes.count()
         down_count = post.down_votes.count()
-        count = up_count - down_count
 
         return JsonResponse({
             'post_id': post_id,
-            'count': count,
+            'up_count': up_count,
+            'down_count': down_count,
             })
+
