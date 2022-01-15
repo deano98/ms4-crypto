@@ -1,41 +1,41 @@
-from django.shortcuts import render, get_object_or_404
+import requests
+from django.utils.text import slugify
+from django.http import HttpResponseRedirect, JsonResponse
+from django.urls import reverse
+from django.shortcuts import render
 from pycoingecko import CoinGeckoAPI
 from .forms import PostForm
 from .models import Post, Coins
-import requests
-from django.utils.text import slugify
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.urls import reverse
-from django.forms import ValidationError
+
 
 
 def markets(request):
     '''
-    Display the current price data for the top 12 cryptocurrencies 
+    Display the current price data for the top 12 cryptocurrencies
     ranked by market cap
 
     **Context**
 
     ``all_markets``
             object containing the price data
-        
+
     **Template:**
 
     :template: `index.html`
 
     '''
-    cg = CoinGeckoAPI()
-    all_markets = cg.get_coins_markets(order='market_cap_desc', 
-                                       vs_currency='usd', per_page=12, page=1)
+    c_g = CoinGeckoAPI()
+    all_markets = c_g.get_coins_markets(order='market_cap_desc',
+                                        vs_currency='usd', per_page=12, page=1)
     return render(request, 'index.html', {'all_markets': all_markets})
 
-    
-def coin_posts(request, id):
+
+def coin_posts(request, coin_id):
     '''
-    GET: Display all posts from the Post model for a particular coin, 
+    GET: Display all posts from the Post model for a particular coin,
     update Coins model with latest data from API.
 
-    POST: Update the Post model with data submitted from a user using 
+    POST: Update the Post model with data submitted from a user using
     the PostForm.
 
     **Context**
@@ -56,13 +56,13 @@ def coin_posts(request, id):
     '''
     if request.method == 'GET':
         coin_display = {}
-        post = Post.objects.filter(coin_name=id)
+        post = Post.objects.filter(coin_name=coin_id)
         api = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=%s&order=market_cap_desc&per_page=100&page=1&sparkline=false' % id
         response = requests.get(api)
         request_user = str(request.user)
 
         data = response.json()
-        coin = data[0]        
+        coin = data[0]
 
         coin_data = Coins(
             coin_id=coin['id'],
@@ -74,9 +74,9 @@ def coin_posts(request, id):
             image_url=coin['image']
         )
         coin_data.save()
-        coin_display = Coins.objects.filter(coin_id=id)
+        coin_display = Coins.objects.filter(coin_id=coin_id)
 
-        return render(request, 'coins.html', { 
+        return render(request, 'coins.html', {
             'post': post,
             'coin_display': coin_display,
             'post_form': PostForm(),
@@ -85,9 +85,9 @@ def coin_posts(request, id):
         )
 
     if request.method == 'POST':
-        post = Post.objects.filter(coin_name=id)
+        post = Post.objects.filter(coin_name=coin_id)
         post_form = PostForm(data=request.POST)
-        coin_display = Coins.objects.filter(coin_id=id)
+        coin_display = Coins.objects.filter(coin_id=coin_id)
         request_user = str(request.user)
 
         if post_form.is_valid():
@@ -107,7 +107,8 @@ def coin_posts(request, id):
         },
     )
 
-def post_edit(request, slug, id):
+
+def post_edit(request, slug, coin_id):
     '''
     Allows a user to edit their own posts
 
@@ -124,11 +125,11 @@ def post_edit(request, slug, id):
                 post_form.save()
         else:
             post_form = PostForm()
-    
-    return HttpResponseRedirect(reverse('coin_posts', args=[id]))
+
+    return HttpResponseRedirect(reverse('coin_posts', args=[coin_id]))
 
 
-def post_delete(request, slug, id):
+def post_delete(request, slug, coin_id):
     '''
     Allows a user to delete their own posts
 
@@ -141,13 +142,13 @@ def post_delete(request, slug, id):
     if str(request.user) == obj.user:
         Post.objects.filter(slug=slug).delete()
 
-    return HttpResponseRedirect(reverse('coin_posts', args=[id]))
+    return HttpResponseRedirect(reverse('coin_posts', args=[coin_id]))
 
 
-def post_upvote(request, id):
+def post_upvote(request, p_id):
     '''
     If a user clicks upvote on a post, checks the Post model
-    to see if user has already voted or not, model is updated 
+    to see if user has already voted or not, model is updated
     accordingly
 
     **Context**
@@ -164,13 +165,13 @@ def post_upvote(request, id):
     :template: `coins.html`
 
     '''
-    if request.method =='POST':
+    if request.method == 'POST':
         post_id = request.POST['postid']
-        post = Post.objects.get(pk = post_id)
-        
-        if post.up_votes.filter(id=request.user.id).exists():
+        post = Post.objects.get(pk=p_id)
+
+        if post.up_votes.filter(p_id=request.user.id).exists():
             post.up_votes.remove(request.user)
-        elif post.down_votes.filter(id=request.user.id).exists():
+        elif post.down_votes.filter(p_id=request.user.id).exists():
             post.down_votes.remove(request.user)
             post.up_votes.add(request.user)
         else:
@@ -185,10 +186,11 @@ def post_upvote(request, id):
             'down_count': down_count,
             })
 
-def post_downvote(request, id):
+
+def post_downvote(request, p_id):
     '''
     If a user clicks downvote on a post, checks the Post model
-    to see if user has already voted or not, model is updated 
+    to see if user has already voted or not, model is updated
     accordingly
 
     **Context**
@@ -206,13 +208,13 @@ def post_downvote(request, id):
 
     '''
 
-    if request.method =='POST':
+    if request.method == 'POST':
         post_id = request.POST['postid']
-        post = Post.objects.get(pk = post_id)
-        
-        if post.down_votes.filter(id=request.user.id).exists():
+        post = Post.objects.get(pk=p_id)
+
+        if post.down_votes.filter(p_id=request.user.id).exists():
             post.down_votes.remove(request.user)
-        elif post.up_votes.filter(id=request.user.id).exists():
+        elif post.up_votes.filter(p_id=request.user.id).exists():
             post.up_votes.remove(request.user)
             post.down_votes.add(request.user)
         else:
@@ -226,4 +228,3 @@ def post_downvote(request, id):
             'up_count': up_count,
             'down_count': down_count,
             })
-
