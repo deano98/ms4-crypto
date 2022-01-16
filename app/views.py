@@ -166,7 +166,7 @@ def post_upvote(request, id):
     '''
     if request.method == 'POST':
         post_id = request.POST['postid']
-        post = Post.objects.get(pk=id)
+        post = Post.objects.get(pk=post_id)
 
         if post.up_votes.filter(id=request.user.id).exists():
             post.up_votes.remove(request.user)
@@ -209,7 +209,7 @@ def post_downvote(request, id):
 
     if request.method == 'POST':
         post_id = request.POST['postid']
-        post = Post.objects.get(pk=id)
+        post = Post.objects.get(pk=post_id)
 
         if post.down_votes.filter(id=request.user.id).exists():
             post.down_votes.remove(request.user)
