@@ -156,6 +156,33 @@ Currently, it is difficult to find all of this information, having to check seve
 
 * An issue was uncovered with form validation, as the title needs to be unique for all posts, when a duplicate title was used in a post, the page just reloaded with an empty form. The if statement was modified to allow the validation error to display on the form, so the user now has vision of the error.
 
+# Screenshots
+
+
+## Supported Devices
+
+* The site has been tested on and supports the following devices:
+  * Moto G4
+  * Galaxy S5
+  * Pixel 2
+  * Pixel 2 XL
+  * iPhone 5/SE
+  * iPhone 6/7/8
+  * iPhone 6/7/8 Plus
+  * iPhone X
+  * iPhone 11
+  * iPad
+  * iPad Pro
+  * Surface Duo
+
+## Supported Browsers
+
+* The site has been tested on and supports the following browsers:
+  * Google Chrome
+  * Mozilla Firefox
+  * Microsoft Edge
+  * Safari
+
 # Deployment
 
 1. GitPod
