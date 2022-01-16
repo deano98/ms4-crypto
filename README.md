@@ -158,6 +158,17 @@ Currently, it is difficult to find all of this information, having to check seve
 
 # Screenshots
 
+### Homepage
+
+* [Desktop](static/screenshots/home-desk-ss.png)
+* [Tablet](static/screenshots/home-tab-ss.png)
+* [Mobile](static/screenshots/home-mob-ss.png)
+
+### Post Page
+
+* [Desktop](static/screenshots/post-desk-ss.png)
+* [Tablet](static/screenshots/post-tab-ss.png)
+* [Mobile](static/screenshots/post-mob-ss.png)
 
 ## Supported Devices
 
