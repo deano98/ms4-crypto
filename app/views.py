@@ -107,7 +107,7 @@ def coin_posts(request, id):
     )
 
 
-def post_edit(request, slug, coin_id):
+def post_edit(request, slug, id):
     '''
     Allows a user to edit their own posts
 
@@ -125,7 +125,7 @@ def post_edit(request, slug, coin_id):
         else:
             post_form = PostForm()
 
-    return HttpResponseRedirect(reverse('coin_posts', args=[coin_id]))
+    return HttpResponseRedirect(reverse('coin_posts', args=[id]))
 
 
 def post_delete(request, slug, id):
