@@ -7,18 +7,19 @@
 <div class="container">
   <div class="row">
     <div class="col order-last">
-      <div class="card card-body">   
-          <form action="" method="POST">
-              {{ post_form | crispy }}
-                {% csrf_token %}
-                  <input type="hidden" id="coin_name" name="coin_name" value="{{ coin.coin_id }}">
-                {% if user.is_authenticated %} 
-                  <button class="btn btn-primary" type="submit">Submit</button>
-                {% else %}
-                  <a class="btn btn-primary" href="{% url 'account_login' %}" role="button">Login</a><a class="btn btn-primary" href="{% url 'account_signup' %}" role="button">Register</a>
-                {% endif %} 
-            </form>
-           </div>
+      <div class="card card-body">
+        <form action="" method="POST">
+          {{ post_form | crispy }}
+          {% csrf_token %}
+          <input type="hidden" id="coin_name" name="coin_name" value="{{ coin.coin_id }}">
+          {% if user.is_authenticated %}
+          <button class="btn btn-primary" type="submit">Submit</button>
+          {% else %}
+          <a class="btn btn-primary" href="{% url 'account_login' %}" role="button">Login</a><a class="btn btn-primary"
+            href="{% url 'account_signup' %}" role="button">Register</a>
+          {% endif %}
+        </form>
+      </div>
     </div>
     <div class="col order-first">
       <div class="card mb-3" style="max-width: 540px;">
@@ -43,113 +44,113 @@
 {% for i in post %}
 
 <div class="container post">
-    <div class="row border border-bottom-0 border-4">
-      <div class="col post text-center">
-        <h3>{{ i.title }}</h3>
-      </div>
-      <div class="col post">
-        <h5>Posted by: <strong>{{ i.user }}</strong></h5>
-      </div>
+  <div class="row border border-bottom-0 border-4">
+    <div class="col post text-center">
+      <h3>{{ i.title }}</h3>
     </div>
-    <div class="row border border-4">
-        <div class="col lh-1 content">
-            <p>{{ i.content }}</p>
-        </div>        
-    </div>
-    <div class="row border border-top-0 border-4 content">
-      <div class="col">
-        {% if i.user == request_user %}
-          <a class="btn btn-primary" href="{% url 'post_delete' i.slug coin.coin_id  %}" role="button">Delete</a>
-          <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">Edit</a>
-          <div class="collapse" id="collapseExample">
-            <div class="card card-body">
-              <form action="{% url 'post_edit' i.slug coin.coin_id  %}" method="POST">
-                {{ post_form | crispy }}
-                {% csrf_token %}
-                <input type="hidden" id="coin_name" name="coin_name" value="{{ coin.coin_id }}">
-                <button class="btn btn-primary" type="submit">Submit</button>
-            </form>
-            </div>
-          </div>
-        {% else %}
-        <button type="button" class="btn btn-secondary btn" disabled>Delete</button>
-        <button type="button" class="btn btn-secondary btn" disabled>Edit</button>    
-        {% endif %}      
-      </div>
-      <div class="col">
-        
-        <strong class="up-vote-count-{{ i.id }} upvote">
-          {{ i.up_votes.count }}
-        </strong>
-        {% if user.is_authenticated %}
-        <i class="fas fa-arrow-alt-circle-up vote upvote upvote-click" data-post="{{ i.id }}"></i>
-        <i class="fas fa-arrow-alt-circle-down vote downvote downvote-click" data-post="{{ i.id }}"></i>
-        {% else %}
-        <i class="fas fa-arrow-alt-circle-up vote-fade upvote upvote-click" data-post="{{ i.id }}"></i>
-        <i class="fas fa-arrow-alt-circle-down vote-fade downvote downvote-click" data-post="{{ i.id }}"></i>
-        {% endif %}
-        <strong class="down-vote-count-{{ i.id }} downvote">
-          {{ i.down_votes.count }}
-        </strong>
-      </div>
-      <div class="col">
-        <p>Posted on: <strong>{{ i.created_on }}</strong></p>
-      </div>
+    <div class="col post">
+      <h5>Posted by: <strong>{{ i.user }}</strong></h5>
     </div>
   </div>
-    
+  <div class="row border border-4">
+    <div class="col lh-1 content">
+      <p>{{ i.content }}</p>
+    </div>
+  </div>
+  <div class="row border border-top-0 border-4 content">
+    <div class="col">
+      {% if i.user == request_user %}
+      <a class="btn btn-primary" href="{% url 'post_delete' i.slug coin.coin_id  %}" role="button">Delete</a>
+      <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
+        aria-controls="collapseExample">Edit</a>
+      <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+          <form action="{% url 'post_edit' i.slug coin.coin_id  %}" method="POST">
+            {{ post_form | crispy }}
+            {% csrf_token %}
+            <input type="hidden" id="coin_name" name="coin_name" value="{{ coin.coin_id }}">
+            <button class="btn btn-primary" type="submit">Submit</button>
+          </form>
+        </div>
+      </div>
+      {% else %}
+      <button type="button" class="btn btn-secondary btn" disabled>Delete</button>
+      <button type="button" class="btn btn-secondary btn" disabled>Edit</button>
+      {% endif %}
+    </div>
+    <div class="col">
+
+      <strong class="up-vote-count-{{ i.id }} upvote">
+        {{ i.up_votes.count }}
+      </strong>
+      {% if user.is_authenticated %}
+      <i class="fas fa-arrow-alt-circle-up vote upvote upvote-click" data-post="{{ i.id }}"></i>
+      <i class="fas fa-arrow-alt-circle-down vote downvote downvote-click" data-post="{{ i.id }}"></i>
+      {% else %}
+      <i class="fas fa-arrow-alt-circle-up vote-fade upvote upvote-click" data-post="{{ i.id }}"></i>
+      <i class="fas fa-arrow-alt-circle-down vote-fade downvote downvote-click" data-post="{{ i.id }}"></i>
+      {% endif %}
+      <strong class="down-vote-count-{{ i.id }} downvote">
+        {{ i.down_votes.count }}
+      </strong>
+    </div>
+    <div class="col">
+      <p>Posted on: <strong>{{ i.created_on }}</strong></p>
+    </div>
+  </div>
+</div>
+
 
 {% endfor %}
 {% endfor %}
 
 <script>
-    $(document).ready(function(){   
-        
-        $(".upvote-click").click(function() {
-            let postid = $(this).data('post');
+  $(document).ready(function () {
 
-            $.ajax({
-                url: 'upvote/',
-                type: 'post',
-                data:{
-                    postid: postid,
-                    csrfmiddlewaretoken: '{{ csrf_token }}',
-                },
-                dataType:'json',
-                success: function(response){
-                    let up_count = response.up_count
-                    let down_count = response.down_count
-                    let id = response.post_id
-                    $(".down-vote-count-"+postid).html(down_count);
-                    $(".up-vote-count-"+postid).html(up_count);
-                    console.log(count, id);
-                }
-            });
-        });
+    $(".upvote-click").click(function () {
+      let postid = $(this).data('post');
 
-        $(".downvote-click").click(function() {
-            let postid = $(this).data('post');
-
-            $.ajax({
-                url: 'downvote/',
-                type: 'post',
-                data:{
-                    postid: postid,
-                    csrfmiddlewaretoken: '{{ csrf_token }}',
-                },
-                dataType:'json',
-                success: function(response){
-                    let up_count = response.up_count
-                    let down_count = response.down_count
-                    let id = response.post_id
-                    $(".down-vote-count-"+postid).html(down_count);
-                    $(".up-vote-count-"+postid).html(up_count);
-                    console.log(count, id);
-                }
-            });
-        });
+      $.ajax({
+        url: 'upvote/',
+        type: 'post',
+        data: {
+          postid: postid,
+          csrfmiddlewaretoken: '{{ csrf_token }}',
+        },
+        dataType: 'json',
+        success: function (response) {
+          let up_count = response.up_count
+          let down_count = response.down_count
+          let id = response.post_id
+          $(".down-vote-count-" + postid).html(down_count);
+          $(".up-vote-count-" + postid).html(up_count);
+          console.log(count, id);
+        }
+      });
     });
 
+    $(".downvote-click").click(function () {
+      let postid = $(this).data('post');
+
+      $.ajax({
+        url: 'downvote/',
+        type: 'post',
+        data: {
+          postid: postid,
+          csrfmiddlewaretoken: '{{ csrf_token }}',
+        },
+        dataType: 'json',
+        success: function (response) {
+          let up_count = response.up_count
+          let down_count = response.down_count
+          let id = response.post_id
+          $(".down-vote-count-" + postid).html(down_count);
+          $(".up-vote-count-" + postid).html(up_count);
+          console.log(count, id);
+        }
+      });
+    });
+  });
 </script>
 
 {% endblock content %}

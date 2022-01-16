@@ -1,4 +1,4 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
 
 {% block content %}
 
@@ -6,25 +6,25 @@
 
   <div class="row row-cols-1 row-cols-md-3 g-4">
     {% for coin in all_markets %}
-      <div class="col">
-        <div class="card">
-          <form action="{% url 'coin_posts' coin.id %}" method="GET">
-            <input type="hidden" id="coin_id" name="coin_id" value="{{ coin.id }}">
-            <input type="image" name="submit" src="{{ coin.image }}">
-          </form>
-          <div class="card-body">
-            <h5 class="card-title">{{ coin.name }}</h5>
-            <p class="card-text">Current Price: <strong>${{ coin.current_price }}</strong></p>
-            <p class="card-text">Marketcap: <strong>${{ coin.market_cap }}</strong></p>
-            <p class="card-text">24h Price Change: <strong>${{ coin.price_change_24h }}</strong></p>  
-          </div>
+    <div class="col">
+      <div class="card">
+        <form action="{% url 'coin_posts' coin.id %}" method="GET">
+          <input type="hidden" id="coin_id" name="coin_id" value="{{ coin.id }}">
+          <input type="image" name="submit" src="{{ coin.image }}">
+        </form>
+        <div class="card-body">
+          <h5 class="card-title">{{ coin.name }}</h5>
+          <p class="card-text">Current Price: <strong>${{ coin.current_price }}</strong></p>
+          <p class="card-text">Marketcap: <strong>${{ coin.market_cap }}</strong></p>
+          <p class="card-text">24h Price Change: <strong>${{ coin.price_change_24h }}</strong></p>
         </div>
       </div>
+    </div>
     {% endfor %}
   </div>
-      
 
-    
+
+
 
 </section>
 
